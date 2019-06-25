@@ -101,12 +101,12 @@ export class Array<T> extends ArrayBufferView {
   }
 
   @operator("[]") private __get(index: i32): T {
-    if (isReference<T>()) {
-      if (!isNullable<T>()) {
-        if (<u32>index >= <u32>this.length_) throw new Error(E_HOLEYARRAY);
-      }
-    }
-    if (<u32>index >= <u32>this.dataLength >>> alignof<T>()) throw new RangeError(E_INDEXOUTOFRANGE);
+    // if (isReference<T>()) {
+    //   if (!isNullable<T>()) {
+    //     if (<u32>index >= <u32>this.length_) throw new Error(E_HOLEYARRAY);
+    //   }
+    // }
+    // if (<u32>index >= <u32>this.dataLength >>> alignof<T>()) throw new RangeError(E_INDEXOUTOFRANGE);
     return this.__unchecked_get(index);
   }
 
