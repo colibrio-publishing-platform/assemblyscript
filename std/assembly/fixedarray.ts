@@ -30,12 +30,12 @@ export class FixedArray<T> {
   }
 
   @operator("[]") private __get(index: i32): T {
-    if (<u32>index >= <u32>this.length) throw new RangeError(E_INDEXOUTOFRANGE);
+    // if (<u32>index >= <u32>this.length) throw new RangeError(E_INDEXOUTOFRANGE);
     return this.__unchecked_get(index);
   }
 
   @operator("[]=") private __set(index: i32, value: T): void {
-    if (<u32>index >= <u32>this.length) throw new RangeError(E_INDEXOUTOFRANGE);
+    // if (<u32>index >= <u32>this.length) throw new RangeError(E_INDEXOUTOFRANGE);
     this.__unchecked_set(index, value);
   }
 

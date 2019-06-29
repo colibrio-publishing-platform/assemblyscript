@@ -1,6 +1,7 @@
 import {COMPARATOR, SORT as SORT_IMPL} from "./util/sort";
 import {idof} from "./builtins";
 import {ArrayBufferView} from "./arraybuffer";
+import {E_INDEXOUTOFRANGE} from "util/error";
 
 export class Int8Array extends ArrayBufferView {
   [key: number]: i8;
@@ -93,6 +94,10 @@ export class Int8Array extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, i8>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Int8Array, i8>(this, array, offset);
   }
 }
 
@@ -188,6 +193,10 @@ export class Uint8Array extends ArrayBufferView {
   reverse(): this {
     return REVERSE<this, u8>(this);
   }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Uint8Array, u8>(this, array, offset);
+  }
 }
 
 export class Uint8ClampedArray extends ArrayBufferView {
@@ -281,6 +290,10 @@ export class Uint8ClampedArray extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, u8>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Uint8ClampedArray, u8>(this, array, offset);
   }
 }
 
@@ -376,6 +389,11 @@ export class Int16Array extends ArrayBufferView {
   reverse(): this {
     return REVERSE<this, i16>(this);
   }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Int16Array, i16>(this, array, offset);
+  }
+
 }
 
 export class Uint16Array extends ArrayBufferView {
@@ -469,6 +487,10 @@ export class Uint16Array extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, u16>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Uint16Array, u16>(this, array, offset);
   }
 }
 
@@ -564,6 +586,10 @@ export class Int32Array extends ArrayBufferView {
   reverse(): this {
     return REVERSE<this, i32>(this);
   }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Int32Array, i32>(this, array, offset);
+  }
 }
 
 export class Uint32Array extends ArrayBufferView {
@@ -657,6 +683,10 @@ export class Uint32Array extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, u32>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Uint32Array, u32>(this, array, offset);
   }
 }
 
@@ -752,6 +782,10 @@ export class Int64Array extends ArrayBufferView {
   reverse(): this {
     return REVERSE<this, i64>(this);
   }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Int64Array, i64>(this, array, offset);
+  }
 }
 
 export class Uint64Array extends ArrayBufferView {
@@ -845,6 +879,10 @@ export class Uint64Array extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, u64>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Uint64Array, u64>(this, array, offset);
   }
 }
 
@@ -940,6 +978,10 @@ export class Float32Array extends ArrayBufferView {
   reverse(): this {
     return REVERSE<this, f32>(this);
   }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Float32Array, f32>(this, array, offset);
+  }
 }
 
 export class Float64Array extends ArrayBufferView {
@@ -1033,6 +1075,10 @@ export class Float64Array extends ArrayBufferView {
 
   reverse(): this {
     return REVERSE<this, f64>(this);
+  }
+
+  set(array: ArrayBufferView, offset: i32 = 0): void {
+    SET<Float64Array, f64>(this, array, offset);
   }
 }
 
@@ -1258,4 +1304,19 @@ function REVERSE<TArray extends ArrayBufferView, T>(array: TArray): TArray {
     store<T>(backPtr, temp);
   }
   return array;
+}
+
+// @ts-ignore: decorator
+@inline
+function SET<TArray extends ArrayBufferView, T>(array: TArray, srcArray: ArrayBufferView, offset: i32): void {
+  if (offset < 0) {
+    throw new RangeError(E_INDEXOUTOFRANGE);
+  }
+  var numBytes = srcArray.dataLength;
+  var byteOffset: u32 = <u32>offset << alignof<T>();
+  if (numBytes + byteOffset > array.dataLength) {
+    throw new RangeError(E_INDEXOUTOFRANGE);
+  }
+
+  memory.copy(array.dataStart + <usize>byteOffset, srcArray.dataStart, <usize>numBytes);
 }

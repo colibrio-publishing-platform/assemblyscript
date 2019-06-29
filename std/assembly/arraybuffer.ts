@@ -56,7 +56,7 @@ export abstract class ArrayBufferView {
   constructor(length: i32) {
     if (<u32>length > <u32>BLOCK_MAXSIZE) throw new RangeError(E_INVALIDLENGTH);
     var buffer = __alloc(<usize>length, idof<ArrayBuffer>());
-    memory.fill(buffer, 0, <usize>length);
+    // memory.fill(buffer, 0, <usize>length);
     return changetype<ArrayBuffer>(buffer); // retains
   }
 
